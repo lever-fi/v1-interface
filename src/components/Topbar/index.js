@@ -1,11 +1,9 @@
-import { ethers } from "ethers";
-import nftCollection from "abis/ERC721Minimal.json";
+import nftCollection from "abis/IERC721Minimal.json";
+import generateContractInstance from "utils/generateContractInstance";
 
 import NavElement from "./NavElement";
 import ConnectWallet from "components/ConnectWallet";
 import Logo from "assets/Logo.png";
-
-import generateContractInstance from "utils/generateContractInstance";
 
 import contractAddresses from "constants/contracts.json";
 

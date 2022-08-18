@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
 import generateContractInstance from "utils/generateContractInstance";
@@ -21,13 +22,14 @@ const ActionButton = ({ bg, content, onClick }) => {
 
 const PoolEntry = ({
 	address = "0x00000000000000000000",
-	collection = "BAYC",
+	collection = "LEVER",
 	deposits = 0,
 	apy = 1.5,
 	size = 150,
-	signer,
+	//signer,
 }) => {
-	const [poolContract, setPoolContract] = useState(null);
+	let navigate = useNavigate();
+	//const [poolContract, setPoolContract] = useState(null);
 	const [depositAmt, setDepositAmt] = useState(
 		ethers.utils.parseEther("0.02")
 	);
@@ -35,7 +37,7 @@ const PoolEntry = ({
 		ethers.utils.parseEther("0.03")
 	);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		const main = async () => {
 			if (signer) {
 				setPoolContract(
@@ -45,40 +47,44 @@ const PoolEntry = ({
 		};
 
 		main();
-	}, [signer]);
+	}, [signer]); */
 	return (
 		<tr className="text-white font-semibold border-y border-zinc-600 transition-all duration-100 hover:bg-neutral-800">
 			<td>
 				<div className="my-2 h-10 w-10 rounded-full bg-zinc-400"></div>
 			</td>
 			<TdCommon content={collection} />
-			<TdCommon content={`${deposits} ETH`} />
+			<TdCommon content={`${deposits} ΞTH`} />
 			<TdCommon content={`${apy}%`} />
-			<TdCommon content={`${size} ETH`} />
+			<TdCommon content={`${size} ΞTH`} />
 			<td>
 				<div className="w-full h-full flex items-center space-x-8">
 					<ActionButton
 						bg="bg-gradient-to-r from-primary to-secondary"
 						content="Deposit"
 						onClick={async () => {
-							if (poolContract) {
-								const depositTxn = await poolContract.deposit({
+							//if (poolContract) {
+							navigate(`../${address}/overview`);
+							/* const depositTxn = await poolContract.deposit({
 									value: depositAmt,
 								});
-								await depositTxn.wait();
-							}
+								await depositTxn.wait(); */
+							//}
 						}}
 					/>
 					<ActionButton
 						bg="bg-gradient-to-l from-primary to-secondary"
 						content="Withdraw"
 						onClick={async () => {
-							if (poolContract) {
+							//if (poolContract) {
+							navigate(`../${address}/manage`);
+							//}
+							/* if (poolContract) {
 								const withdrawTxn = await poolContract.collect(
 									withdrawAmt
 								);
 								await withdrawTxn.wait();
-							}
+							} */
 						}}
 					/>
 				</div>

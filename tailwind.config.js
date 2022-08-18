@@ -7,9 +7,11 @@ module.exports = {
 				128: "32rem",
 			},
 			colors: {
+				"neutral-1000": "#171717",
 				primary: "#FF7979",
 				secondary: "#6010C6",
 				"secondary-transparent": "rgba(96, 16, 198, 0)",
+				"electric-blue": "#0094FF",
 			},
 		},
 	},

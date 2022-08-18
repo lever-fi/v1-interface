@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
+import {
+	BrowserRouter as Router,
+	Routes,
+	Route,
+	Navigate,
+	Outlet,
+} from "react-router-dom";
 import { ethers } from "ethers";
 import web3Modal from "utils/web3Modal";
 
-import Topbar from "components/Topbar";
 import PoolContainer from "components/PoolContainer";
-import Footer from "components/Footer";
+import RootPage from "screens/RootPage";
+
+import LoanerModal from "components/PoolModal/LoanerModal";
+import BorrowerModal from "components/PoolModal/BorrowerModal";
 
 const App = () => {
 	const [connected, setConnected] = useState(false);
@@ -66,22 +75,86 @@ const App = () => {
 
 	return (
 		<div className="">
-			<Topbar
-				{...{
-					setConnected,
-					address,
-					setAddress,
-					instance,
-					setInstance,
-					provider,
-					setProvider,
-					signer,
-					setSigner,
-				}}
-			/>
-			<div className="h-28"></div>
-			<PoolContainer {...{ instance, provider, signer }} />
-			<Footer />
+			<Router>
+				<Routes>
+					<Route
+						path="/"
+						exact
+						element={
+							<RootPage
+								{...{
+									setConnected,
+									address,
+									setAddress,
+									instance,
+									setInstance,
+									provider,
+									setProvider,
+									signer,
+									setSigner,
+								}}
+							/>
+						}
+					>
+						<Route
+							path="/"
+							element={
+								<PoolContainer
+									{...{ instance, provider, signer }}
+								/>
+							}
+						>
+							<Route path=":poolAddress/*">
+								<Route
+									path="overview"
+									element={
+										<LoanerModal
+											title={"Overview"}
+											altTitle={"Manage"}
+											defaultView={true}
+										/>
+									}
+								/>
+								<Route
+									path="manage"
+									element={
+										<LoanerModal
+											title={"Overview"}
+											altTitle={"Manage"}
+											defaultView={false}
+										/>
+									}
+								/>
+								<Route
+									path="borrow"
+									element={
+										<BorrowerModal
+											title={"Borrow"}
+											altTitle={"Activity"}
+											defaultView={true}
+										/>
+									}
+								/>
+								<Route
+									path="activity"
+									element={
+										<BorrowerModal
+											title={"Borrow"}
+											altTitle={"Activity"}
+											defaultView={false}
+										/>
+									}
+								/>
+								<Route path=":loanId" />
+								<Route
+									path="*"
+									element={<Navigate to="overview" replace />}
+								/>
+							</Route>
+						</Route>
+					</Route>
+				</Routes>
+			</Router>
 		</div>
 	);
 };
