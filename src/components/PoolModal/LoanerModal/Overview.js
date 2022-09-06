@@ -14,7 +14,7 @@ const Overview = ({ pool, collection }) => {
 
 	return (
 		<>
-			<div>
+			<div className="px-2">
 				<div className="flex justify-between w-full px-4 mt-8">
 					<div className="pr-1 md:pr-4 w-1/2 space-y-4">
 						<ModalEntry

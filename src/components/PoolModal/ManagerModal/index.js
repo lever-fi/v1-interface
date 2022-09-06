@@ -14,8 +14,7 @@ import { getPoolByAddress } from "data/pools";
 import Modal from "components/Modal";
 import Banner from "components/PoolModal/Banner";
 import PoolLink from "components/PoolModal/PoolLink";
-import Overview from "./Overview";
-import Manage from "./Manage";
+import Repay from "./Repay";
 
 const defaultCollection = {
 	symbol: "BAYC",
@@ -26,19 +25,19 @@ const defaultCollection = {
 	links: [
 		{
 			name: "OpenSea",
-			href: "opensea.io/collection/{{SLUG}}",
+			href: "opensea.io",
 			icon:
 				"https://storage.googleapis.com/opensea-static/Logomark/Logomark-Blue.png",
 		},
 		{
 			name: "LooksRare",
-			href: "looksrare.org/collection/{{ADDRESS}}",
+			href: "looksrare.org",
 			icon:
 				"https://publish.one37pm.net/wp-content/uploads/2022/01/MOBILE-65.jpg",
 		},
 		{
 			name: "Etherscan",
-			href: "etherscan.io/address/{{ADDRESS}}",
+			href: "etherscan.com",
 			icon:
 				"https://etherscan.io/images/brandassets/etherscan-logo-circle.png",
 		},
@@ -48,14 +47,14 @@ const defaultCollection = {
 			value: 1920.2,
 			change: 12.9,
 		},
-		"Avg. Interest Rate": {
+		"Interest Rate": {
 			value: 0.05,
 		},
 		"Collection Vol. (24h)": {
 			value: 19203.04,
 			change: 12.9,
 		},
-		"Avg. Daily % Rate": {
+		APR: {
 			value: 4.19,
 		},
 		"Loan Term": {
@@ -86,9 +85,14 @@ const defaultCollection = {
 	],
 };
 
-const LoanerModal = ({ title, altTitle, defaultView }) => {
+const bg =
+	"https://lh3.googleusercontent.com/i5dYZRkVCUK97bfprQ3WXyrT9BnLSZtVKGJlKQ919uaUB0sxbngVCioaiyu9r6snqfi2aaTyIvv6DHm4m2R3y7hMajbsv14pSZK8mhs=h600";
+const logo =
+	"https://lh3.googleusercontent.com/Ju9CkWtV-1Okvf45wo8UctR-M9He2PjILP0oOvxE89AyiPPGtrR3gysu1Zgy0hjd2xKIgjJJtWIc0ybj4Vd7wv8t3pxDGHoJBzDB=s168";
+
+const ManagerModal = ({ title, altTitle, defaultView }) => {
 	let navigate = useNavigate();
-	const { poolAddress } = useParams();
+	const { poolAddress, loanId } = useParams();
 
 	const [active, setActive] = useState(true);
 	const [collection, setCollection] = useState({});
@@ -164,7 +168,7 @@ const LoanerModal = ({ title, altTitle, defaultView }) => {
 				},
 				{
 					title: `${_collection.original.symbol}-LFI-LPV (Vault)`,
-					address: "0x",
+					address: "0x~",
 				},
 			];
 
@@ -205,6 +209,8 @@ const LoanerModal = ({ title, altTitle, defaultView }) => {
 		};
 
 		main();
+		// opensea api call
+		// repack graph query res
 	}, [poolQueryResult]);
 
 	useEffect(() => {
@@ -233,58 +239,45 @@ const LoanerModal = ({ title, altTitle, defaultView }) => {
 						<div>
 							<div className="flex items-start justify-between px-4">
 								<h3 className="text-2xl font-bold text-white">
-									{isView ? title : altTitle}
+									{"#0x9c25f184a133f525a2750f...98c" || "~"}
 								</h3>
-								<div className="w-24 h-8 rounded-md bg-white text-center flex items-center justify-center text-center cursor-pointer shadow-inner">
-									<p
-										className="font-semibold"
-										onClick={() => {
-											navigate(
-												isView
-													? "../manage"
-													: "../overview"
-											);
-											toggleView();
+							</div>
+
+							<div className="my-2 py-4 w-full">
+								<div
+									className="relative bg-cover bg-center h-16 md:h-24 lg:h-32 flex pt-2 justify-center"
+									style={{
+										backgroundImage: `url(${bg})`,
+									}}
+								>
+									<div
+										className="overflow-hidden bg-cover bg-center h-8 w-8 md:h-8 md:w-8 lg:h-16 lg:w-16"
+										style={{
+											backgroundImage: `url(${logo})`,
 										}}
-									>
-										{isView ? altTitle : title}
-									</p>
+									/>
+									<div
+										className="absolute overflow-hidden bg-cover bg-center h-16 w-16 top-[60%] md:h-24 md:w-24 lg:h-28 lg:w-28"
+										style={{
+											backgroundImage: `url(${"https://ipfs.io/ipfs/QmPbxeGcXhYQQNgsC6a36dDyYUcHgMLnGKnF8pVFmGsvqi"})`,
+										}}
+									></div>
 								</div>
 							</div>
 
-							<Banner
-								bg={
-									"https://lh3.googleusercontent.com/i5dYZRkVCUK97bfprQ3WXyrT9BnLSZtVKGJlKQ919uaUB0sxbngVCioaiyu9r6snqfi2aaTyIvv6DHm4m2R3y7hMajbsv14pSZK8mhs=h600"
-								}
-								logo={
-									"https://lh3.googleusercontent.com/Ju9CkWtV-1Okvf45wo8UctR-M9He2PjILP0oOvxE89AyiPPGtrR3gysu1Zgy0hjd2xKIgjJJtWIc0ybj4Vd7wv8t3pxDGHoJBzDB=s168"
-								}
-							/>
-
-							<div className="flex justify-between items-center px-2 md:px-4">
+							<div className="flex px-2 md:px-4">
 								<p className="text-xl font-bold text-white text-left">
-									{collection?.original?.name || "Loading..."}
+									{"#1928" || "Loading..."}
 								</p>
-								<div className="flex items-center space-x-2">
-									{pool?.links && pool.links.length > 0
-										? pool.links.map((props, idx) => {
-												return (
-													<PoolLink
-														key={idx}
-														{...props}
-													/>
-												);
-										  })
-										: null}
-								</div>
 							</div>
 						</div>
 
-						{isView ? (
-							<Overview {...{ pool, collection }} />
+						<Repay {...{ pool, collection }} />
+						{/* {isView ? (
+							<Borrow {...{ pool, collection }} />
 						) : (
-							<Manage {...{ pool, collection }} />
-						)}
+							<Activity {...{ pool, collection }} />
+						)} */}
 					</div>
 				</div>
 				<div className="absolute right-3 -bottom-6">
@@ -297,4 +290,4 @@ const LoanerModal = ({ title, altTitle, defaultView }) => {
 	);
 };
 
-export default LoanerModal;
+export default ManagerModal;

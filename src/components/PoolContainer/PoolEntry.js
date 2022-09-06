@@ -74,7 +74,7 @@ const PoolEntry = ({
 					/>
 					<ActionButton
 						bg="bg-gradient-to-l from-primary to-secondary"
-						content="Withdraw"
+						content="Manage"
 						onClick={async () => {
 							//if (poolContract) {
 							navigate(`../${address}/manage`);

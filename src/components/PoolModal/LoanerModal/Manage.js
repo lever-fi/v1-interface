@@ -15,6 +15,7 @@ const Manage = ({ pool, collection }) => {
 		balance: BigNumber.from(0),
 		totalSupply: BigNumber.from(0),
 	});
+	const [ethBalance, setEthBalance] = useState(0);
 	const [action, setAction] = useState(true);
 	const [depositAmount, setDepositAmount] = useState(0);
 	const [collectAmount, setCollectAmount] = useState(0);
@@ -39,7 +40,7 @@ const Manage = ({ pool, collection }) => {
 		main();
 	}, [pool]);
 	return (
-		<>
+		<div className="px-2">
 			<div className="space-y-8">
 				<div className="flex justify-between w-full px-4 mt-8">
 					<div className="pr-1 md:pr-4 w-1/2 space-y-4">
@@ -103,6 +104,9 @@ const Manage = ({ pool, collection }) => {
 						placeholder={12.99}
 						symbol={"ΞTH"}
 						update={setDepositAmount}
+						min={parseFloat(
+							round(utils.formatEther(tokenInfo?.balance))
+						)}
 					/>
 					<div
 						className="w-8 h-8 p-2 mt-3 mb-2 rounded-full bg-neutral-700 cursor-pointer"
@@ -119,6 +123,10 @@ const Manage = ({ pool, collection }) => {
 						placeholder={1920.2}
 						symbol={collection?.token?.symbol || "LEVER-LFI-LPT"}
 						update={setCollectAmount}
+						min={0}
+						max={parseFloat(
+							round(utils.formatEther(tokenInfo?.balance))
+						)}
 					/>
 				</div>
 			</div>
@@ -180,7 +188,7 @@ const Manage = ({ pool, collection }) => {
 					}}
 				/>
 			</div>
-		</>
+		</div>
 	);
 };
 

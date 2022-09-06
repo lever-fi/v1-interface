@@ -9,14 +9,15 @@ import { getLoans } from "data/loans";
 import ActionButton from "components/ActionButton";
 import { ContractWrapper, ModalEntry } from "components/ModalEntry";
 import NumberInput from "components/Inputs/Number";
+import PaymentScheduleOverview from "components/PaymentScheduleOverview";
 
-const Borrow = ({ pool, collection }) => {
+const Repay = ({ pool, collection }) => {
 	const { poolAddress } = useParams();
 
 	const [imageUrl, setImageUrl] = useState("");
 	const [metadata, setMetadata] = useState("");
 	const [tokenId, setTokenId] = useState(1);
-	const [contributionAmount, setContributionAmount] = useState(0);
+	const [repaymentAmount, setRepaymentAmount] = useState(0);
 	// loan exist
 	const [loanQueryResult, reexecuteLoanQueryResult] = useQuery(
 		getLoans(
@@ -86,65 +87,43 @@ const Borrow = ({ pool, collection }) => {
 
 	return (
 		<>
-			<div className="mt-4 space-y-8 px-2">
-				<div className="flex flex-col items-center w-1/2 mx-auto space-y-4">
-					<NumberInput
-						name={"Token ID"}
-						id={"token-id"}
-						placeholder={9619}
-						update={setTokenId}
-					/>
-					{/* <ModalEntry
-						title={"Token ID"}
-						value={9619}
-						symbol={""}
-						right={false}
-					/> */}
-					<div
-						className="overflow-hidden bg-cover bg-center h-20 w-20 md:h-36 md:w-36 lg:h-44 lg:w-44"
-						style={{
-							backgroundImage: `url(${imageUrl})`,
-							//backgroundImage: `url(${"https://img.seadn.io/files/898e79d4a38391abf25a3ba64118980c.png?fit=max&w=600"})`,
-						}}
-					/>
-				</div>
+			<div className="mt-8 space-y-8 px-2">
 				<div className="flex justify-between w-full px-4 mt-4">
 					<div className="pr-1 md:pr-4 w-1/2 space-y-4">
 						<ModalEntry
-							title={"Minimum Contribution"}
+							title={"Principal"}
 							value={0}
 							symbol={"ΞTH"}
 							right={false}
 						/>
 						<ModalEntry
-							title={"Interest Rate"}
+							title={"Ownership"}
 							value={0.05}
-							change={12.9}
 							symbol={"%"}
 							right={false}
 						/>
 						<ModalEntry
-							title={"Collateral Coverage Ratio"}
-							value={utils.formatEther(
-								BigNumber.from(
-									pool.collateralCoverageRatio || 0
-								).mul(100)
-							)}
-							symbol={"%"}
+							title={"Initialization"}
+							value={"04/25/23 09:13:00"}
 							right={false}
 						/>
 					</div>
 					<div className="pl-1 md:pl-4 w-1/2 space-y-4">
 						<ModalEntry
-							title={"Payment Frequency"}
-							value={pool?.paymentFrequency / (3600 * 24) || 0}
-							symbol={"days"}
+							title={"Interest Rate"}
+							value={0.05}
+							symbol={"%"}
 							right={true}
 						/>
 						<ModalEntry
-							title={"Loan Term"}
-							value={pool?.loanTerm / (3600 * 24 * 7) || 0}
-							symbol={"wks"}
+							title={"Compounds in"}
+							value={"10:00:02"}
+							symbol={"DD:HH:MM"}
+							right={true}
+						/>
+						<ModalEntry
+							title={"Expiration"}
+							value={"04/16/23 23:28:00"}
 							right={true}
 						/>
 					</div>
@@ -152,12 +131,12 @@ const Borrow = ({ pool, collection }) => {
 				<div className="w-full">
 					<div className="-mt-4 flex flex-col items-center w-1/2 mx-auto">
 						<NumberInput
-							name={"Contribute"}
-							id={"contribute"}
+							name={"Repay"}
+							id={"repay"}
 							placeholder={12.99}
 							min={0}
 							symbol={"ΞTH"}
-							update={setContributionAmount}
+							update={setRepaymentAmount}
 						/>
 						{/* Generate payment plan */}
 						{/* <ModalEntry
@@ -170,14 +149,49 @@ const Borrow = ({ pool, collection }) => {
 				</div>
 			</div>
 
-			<div className="mt-8 mb-6">
+			<div className="px-6 my-6">
+				<PaymentScheduleOverview
+					payments={[
+						{
+							principal: 2.87,
+							interest: 0.0,
+							interval: "0 days",
+							due: "10/29/22",
+							paid: true,
+						},
+						{
+							principal: 2.87,
+							interest: 0.02,
+							interval: "7 days",
+							due: "10/29/22",
+							paid: false,
+						},
+						{
+							principal: 2.87,
+							interest: 0.05,
+							interval: "7 days",
+							due: "10/29/22",
+							paid: false,
+						},
+						{
+							principal: 2.87,
+							interest: 0.01,
+							interval: "7 days",
+							due: "10/29/22",
+							paid: false,
+						},
+					]}
+				/>
+			</div>
+
+			<div className="mb-4">
 				<ActionButton
 					bg={
 						canBorrow
 							? "bg-gradient-to-r from-primary to-secondary"
 							: "bg-neutral-400"
 					}
-					content="Borrow"
+					content="Repay"
 					onClick={async () => {}}
 				/>
 			</div>
@@ -185,4 +199,4 @@ const Borrow = ({ pool, collection }) => {
 	);
 };
 
-export default Borrow;
+export default Repay;

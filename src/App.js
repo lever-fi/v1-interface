@@ -14,6 +14,7 @@ import RootPage from "screens/RootPage";
 
 import LoanerModal from "components/PoolModal/LoanerModal";
 import BorrowerModal from "components/PoolModal/BorrowerModal";
+import ManagerModal from "components/PoolModal/ManagerModal";
 
 const App = () => {
 	const [connected, setConnected] = useState(false);
@@ -97,6 +98,10 @@ const App = () => {
 						}
 					>
 						<Route
+							path="/profile"
+							element={<Navigate to="/" replace />}
+						/>
+						<Route
 							path="/"
 							element={
 								<PoolContainer
@@ -145,7 +150,28 @@ const App = () => {
 										/>
 									}
 								/>
-								<Route path=":loanId" />
+								<Route path=":loanId">
+									<Route
+										path="overview"
+										element={
+											<ManagerModal
+												title={"Overview"}
+												altTitle={"Repay"}
+												defaultView={true}
+											/>
+										}
+									/>
+									<Route
+										path="repay"
+										element={
+											<ManagerModal
+												title={"Repay"}
+												altTitle={"Overview"}
+												defaultView={false}
+											/>
+										}
+									/>
+								</Route>
 								<Route
 									path="*"
 									element={<Navigate to="overview" replace />}
