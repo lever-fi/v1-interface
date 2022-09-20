@@ -9,12 +9,15 @@ import {
 import { ethers } from "ethers";
 import web3Modal from "utils/web3Modal";
 
-import PoolContainer from "components/PoolContainer";
+import Home from "screens/Home";
 import RootPage from "screens/RootPage";
 
+import PoolContainer from "components/PoolContainer";
 import LoanerModal from "components/PoolModal/LoanerModal";
 import BorrowerModal from "components/PoolModal/BorrowerModal";
 import ManagerModal from "components/PoolModal/ManagerModal";
+
+import Workshop from "components/Workshop";
 
 const App = () => {
 	const [connected, setConnected] = useState(false);
@@ -101,7 +104,83 @@ const App = () => {
 							path="/profile"
 							element={<Navigate to="/" replace />}
 						/>
+						<Route path="/workshop" element={<Workshop />}>
+							<Route path=":poolAddress/*">
+								<Route
+									path="overview"
+									element={
+										<LoanerModal
+											title={"Overview"}
+											altTitle={"Manage"}
+											defaultView={true}
+										/>
+									}
+								/>
+								<Route
+									path="manage"
+									element={
+										<LoanerModal
+											title={"Overview"}
+											altTitle={"Manage"}
+											defaultView={false}
+										/>
+									}
+								/>
+								<Route
+									path="borrow"
+									element={
+										<BorrowerModal
+											title={"Borrow"}
+											altTitle={"Activity"}
+											defaultView={true}
+										/>
+									}
+								/>
+								<Route
+									path="activity"
+									element={
+										<BorrowerModal
+											title={"Borrow"}
+											altTitle={"Activity"}
+											defaultView={false}
+										/>
+									}
+								/>
+								<Route path=":loanId">
+									<Route
+										path="overview"
+										element={
+											<ManagerModal
+												title={"Overview"}
+												altTitle={"Repay"}
+												defaultView={true}
+											/>
+										}
+									/>
+									<Route
+										path="repay"
+										element={
+											<ManagerModal
+												title={"Repay"}
+												altTitle={"Overview"}
+												defaultView={false}
+											/>
+										}
+									/>
+								</Route>
+								<Route
+									path="*"
+									element={<Navigate to="overview" replace />}
+								/>
+							</Route>
+						</Route>
 						<Route
+							path="/"
+							element={
+								<Home {...{ instance, provider, signer }} />
+							}
+						></Route>
+						{/* <Route
 							path="/"
 							element={
 								<PoolContainer
@@ -177,7 +256,7 @@ const App = () => {
 									element={<Navigate to="overview" replace />}
 								/>
 							</Route>
-						</Route>
+						</Route> */}
 					</Route>
 				</Routes>
 			</Router>
