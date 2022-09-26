@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { StatContainer } from "./Stats";
+import Socials from "./Socials";
 
 import ActionDepositView from "./views/action/Deposit";
 import ActionBorrowView from "./views/action/Borrow";
@@ -14,6 +15,10 @@ import InspectContractsView from "./views/inspect/Contracts";
 
 import { Loans, Loan } from "state/Collection/Inspect/Loans";
 import { Activity } from "state/Collection/Inspect/Activity";
+
+import OpenSeaIcon from "assets/Socials/OpenSea.svg";
+import LooksRareIcon from "assets/Socials/LooksRare.svg";
+import TheGraphIcon from "assets/Socials/TheGraph.svg";
 
 const PoolOverview = (
 	{
@@ -149,6 +154,8 @@ const PoolOverview = (
 			),
 		},
 	]);
+
+	const [collection, setCollection] = useState({});
 
 	const actionHeaders = ["Deposit", "Borrow", "Repay", "Inspect"];
 	const inspectHeaders = ["Activity", "My Loans", "Borrow", "Contracts"];
@@ -437,6 +444,15 @@ const PoolOverview = (
 			},
 		]);
 	}, []);
+
+	useEffect(() => {
+		setCollection({
+			name: "Bored Ape Yacht Club",
+			symbol: "BAYC",
+			address: "0x7f268357a8c2552623316e2562d90e642bb538e5",
+		});
+	}, []);
+
 	return (
 		<div className="w-full">
 			<div>
@@ -453,6 +469,25 @@ const PoolOverview = (
 						}}
 					></div>
 				</div>
+			</div>
+
+			<div className="my-4 flex items-center justify-between">
+				<div>
+					<div className="flex items-end space-x-2">
+						<p className="font-bold text-xl text-white">
+							{collection.name}
+						</p>
+						<p className="font-semibold">{collection.symbol}</p>
+					</div>
+					<p className="text-xs">{collection.address}</p>
+				</div>
+				<Socials
+					socials={[
+						{ name: "OpenSea", href: "", icon: OpenSeaIcon },
+						{ name: "LooksRare", href: "", icon: LooksRareIcon },
+						{ name: "Etherscan", href: "", icon: TheGraphIcon },
+					]}
+				/>
 			</div>
 
 			<div className="my-6 grid grid-cols-3 grid-flow-col gap-4">
