@@ -8,9 +8,13 @@ import { RangeInput } from "components/Pool/Overview/Inputs";
 
 import { ReactComponent as SwapOutlined } from "assets/SwapOutlined.svg";
 
-const EthAmount = observer(({ calculator }) => <span>{calculator.eth}</span>);
+import round from "utils/round";
+
+const EthAmount = observer(({ calculator }) => (
+	<span>{round(calculator.eth)}</span>
+));
 const TokenAmount = observer(({ calculator }) => (
-	<span>{calculator.token}</span>
+	<span>{round(calculator.token)}</span>
 ));
 
 const Deposit = ({}) => {
@@ -96,6 +100,7 @@ const Deposit = ({}) => {
 										<RangeInput
 											max={100}
 											min={0}
+											step={0.001}
 											placeholder={20}
 											disabled={false}
 											symbol={"ETH"}
@@ -104,6 +109,14 @@ const Deposit = ({}) => {
 													calculator.updateConversion(
 														{
 															eth: e.target.value,
+															params: [
+																400 +
+																	parseFloat(
+																		e.target
+																			.value
+																	),
+																180.861244,
+															],
 														}
 													);
 												}
@@ -124,6 +137,7 @@ const Deposit = ({}) => {
 								calculator.reset({
 									eth: 0,
 									token: 0,
+									totalValue: 0,
 								});
 							}}
 						>
@@ -154,15 +168,20 @@ const Deposit = ({}) => {
 										<RangeInput
 											max={100}
 											min={0}
+											step={0.001}
 											placeholder={20}
 											disabled={false}
-											symbol={"ETH"}
+											symbol={"BAYC-LPT"}
 											onChange={(e) => {
 												if (!isContribute) {
 													calculator.updateConversion(
 														{
 															token:
 																e.target.value,
+															params: [
+																400,
+																180.861244,
+															],
 														}
 													);
 												}

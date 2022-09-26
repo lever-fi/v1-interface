@@ -1,5 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
+import { ethToToken, tokenToEth } from "utils/calcConversion";
+
 export class Calculator {
 	eth = 0;
 	token = 0;
@@ -13,18 +15,16 @@ export class Calculator {
 		this.token = token;
 	}
 
-	updateConversion({ eth, token }) {
+	updateConversion({ eth, token, params }) {
 		if (eth) {
-			console.log("converting eth");
 			this.eth = eth;
-			this.token = eth * 100;
+			this.token = ethToToken(eth, params[0], params[1]);
 			return;
 		}
 
 		if (token) {
-			console.log("converting token");
 			this.token = token;
-			this.eth = token / 100;
+			this.eth = tokenToEth(token, params[0], params[1]);
 			return;
 		}
 	}
