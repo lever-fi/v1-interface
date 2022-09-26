@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { ethers } from "ethers";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import web3Modal from "utils/web3Modal";
 
-const ConnectWallet = ({
+const ConnectWallet = (/* {
 	setConnected,
 	address,
 	instance,
@@ -12,10 +13,11 @@ const ConnectWallet = ({
 	setInstance,
 	setProvider,
 	setSigner,
-}) => {
+} */) => {
 	const [hovered, setHovered] = useState(false);
 
-	return (
+	return <ConnectButton label="Connect" showBalance={false} />;
+	/* return (
 		<div
 			className="relative w-full h-10 cursor-pointer"
 			onClick={async () => {
@@ -63,7 +65,7 @@ const ConnectWallet = ({
 				</div>
 			</div>
 		</div>
-	);
+	); */
 };
 
 export default ConnectWallet;

@@ -6,7 +6,7 @@ import Footer from "components/Footer";
 const RootPage = (props) => {
 	return (
 		<div className="min-h-screen overflow-y-auto overflow-x-hidden">
-			<Topbar {...props} />
+			<Topbar /* {...props} */ />
 			<div className="h-16"></div>
 			<Outlet {...props} />
 			<div className="h-16"></div>
