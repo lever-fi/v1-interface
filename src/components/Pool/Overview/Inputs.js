@@ -1,22 +1,25 @@
-export const RangeInput = ({ max, min, placeholder, disabled, onChange }) => (
+export const RangeInput = ({
+	max,
+	min,
+	step,
+	placeholder,
+	disabled,
+	onChange,
+}) => (
 	<input
 		type="range"
-		min={min}
-		max={max}
-		placeholder={placeholder}
-		disabled={disabled}
+		{...{ max, min, step, placeholder, disabled, onChange }}
 		className={`range range-sm ${
 			!disabled ? "range-primary" : "range-base-100 cursor-default"
 		}`}
-		onChange={onChange}
 	/>
 );
 
-export const NumberInput = ({ max, min, placeholder, disabled }) => (
+export const NumberInput = ({ max, min, placeholder, disabled, className }) => (
 	<input
 		type="number"
 		{...{ max, min, placeholder, disabled }}
-		className="input input-bordered w-full"
+		className={"input input-bordered w-full " + className}
 	/>
 	/* {symbol ? <span>{symbol}</span> : null} */
 );
