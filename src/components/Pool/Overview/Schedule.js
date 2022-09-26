@@ -34,7 +34,10 @@ const Item = ({ principal, interest, due, state }) => {
 
 const Schedule = observer(({ loan }) => {
 	return (
-		<ul className="steps steps-vertical w-full" data-theme="dracula">
+		<ul
+			className="steps steps-vertical w-full overflow-x-hidden"
+			data-theme="dracula"
+		>
 			{loan.schedule.map((item, index) => (
 				<Item {...item} key={index} />
 			))}
