@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ethers, BigNumber } from "ethers";
 
 import generateContractInstance from "utils/generateContractInstance";
@@ -21,13 +22,14 @@ const ActionButton = ({ bg, content, onClick }) => {
 
 const BorrowerPoolEntry = ({
 	address = "0x00000000000000000000",
-	collection = "BAYC",
-	minDeposit = 60,
+	collection = "LEVER",
+	coverageRatio = 60,
 	interestRate = 0.7,
 	loanTerm = "4 weeks",
-	paymentDue = "Weekly",
+	paymentFrequency = "Weekly",
 	signer,
 }) => {
+	let navigate = useNavigate();
 	const [poolContract, setPoolContract] = useState(null);
 	const [borrowAmt, setBorrowAmt] = useState(ethers.utils.parseEther("0.01"));
 	const [tokenId, setTokenId] = useState(0);
@@ -50,10 +52,10 @@ const BorrowerPoolEntry = ({
 				<div className="my-2 h-10 w-10 rounded-full bg-zinc-400"></div>
 			</td>
 			<TdCommon content={collection} />
-			<TdCommon content={`${minDeposit}%`} />
+			<TdCommon content={`${coverageRatio}%`} />
 			<TdCommon content={`${interestRate}%`} />
 			<TdCommon content={`${loanTerm}`} />
-			<TdCommon content={`${paymentDue}`} />
+			<TdCommon content={`${paymentFrequency}`} />
 			<td>
 				<div className="w-full h-full flex items-center space-x-8">
 					<ActionButton
@@ -61,6 +63,9 @@ const BorrowerPoolEntry = ({
 						content="Borrow"
 						onClick={async () => {
 							if (poolContract) {
+								navigate(`../${address}/borrow`);
+							}
+							/* if (poolContract) {
 								const borrowTxn = await poolContract.borrow(
 									BigNumber.from(tokenId),
 									{
@@ -68,7 +73,7 @@ const BorrowerPoolEntry = ({
 									}
 								);
 								await borrowTxn.wait();
-							}
+							} */
 						}}
 					/>
 				</div>

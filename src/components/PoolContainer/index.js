@@ -1,145 +1,119 @@
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { Outlet } from "react-router-dom";
+import { ethers, utils, BigNumber } from "ethers";
+import { useQuery } from "urql";
 import axios from "axios";
+
+import contractAddresses from "constants/contracts.json";
+
+import round from "utils/round";
+
+import { getPools } from "data/pools";
+import { getLoans } from "data/loans";
 
 import PoolEntry from "./PoolEntry";
 import BorrowerPoolEntry from "./BorrowerPoolEntry";
 import BorrowerLoanEntry from "./BorrowerLoanEntry";
 import Switch from "components/Switch";
 
-import contractAddresses from "constants/contracts.json";
-
-const Data = ({ poolView, lenderView, signer }) => {
+const Data = ({ poolView, lenderView, signer, pools, loans }) => {
 	return (
 		<>
 			{lenderView && poolView ? (
 				<>
-					<PoolEntry
-						address={contractAddresses["pool"]}
-						collection={"BAYC"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
-					<PoolEntry
-						address={0}
-						collection={"DOODLE"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
-					<PoolEntry
-						address={0}
-						collection={"AZUKI"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
-					<PoolEntry
-						address={0}
-						collection={"PALS"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
-					<PoolEntry
-						address={0}
-						collection={"MOONBIRD"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
-					<PoolEntry
-						address={0}
-						collection={"OTHR"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
-					<PoolEntry
-						address={0}
-						collection={"PEC"}
-						deposits={0}
-						apy={1.5}
-						size={150}
-						signer={signer}
-					/>
+					{pools && pools.length > 0 ? (
+						<>
+							{pools.map((pool) => {
+								return (
+									<PoolEntry
+										key={pool.id}
+										address={pool.address}
+										collection={
+											pool.original_collection.symbol
+										}
+										deposits={"0"} // how much have you deposited
+										apy={4.5}
+										liquidity={"0"} // balance
+										size={"0"} // size
+										signer={signer}
+									/>
+								);
+							})}
+						</>
+					) : //<p>No pools yet.</p>
+					null}
 				</>
 			) : poolView ? (
 				<>
-					<BorrowerPoolEntry
-						address={contractAddresses["pool"]}
-						collection={"BAYC"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
-					<BorrowerPoolEntry
-						address={0}
-						collection={"DOODLE"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
-					<BorrowerPoolEntry
-						address={0}
-						collection={"AZUKI"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
-					<BorrowerPoolEntry
-						address={0}
-						collection={"PALS"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
-					<BorrowerPoolEntry
-						address={0}
-						collection={"MOONBIRD"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
-					<BorrowerPoolEntry
-						address={0}
-						collection={"OTHR"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
-					<BorrowerPoolEntry
-						address={0}
-						collection={"PEC"}
-						minDeposit={60}
-						interestRate={0.7}
-						lonaTerm={"4 weeks"}
-						paymentDue={"Weekly"}
-						signer={signer}
-					/>
+					{pools && pools.length > 0 ? (
+						<>
+							{pools.map((pool) => {
+								return (
+									<BorrowerPoolEntry
+										key={pool.id}
+										address={pool.address}
+										collection={
+											pool.original_collection.symbol
+										}
+										coverageRatio={utils.formatEther(
+											BigNumber.from(
+												pool.collateral_coverage_ratio
+											).mul(100)
+										)}
+										interestRate={utils.formatEther(
+											BigNumber.from(
+												pool.interest_rate
+											).mul(100)
+										)}
+										loanTerm={
+											`${Math.floor(
+												pool.loan_term / (3600 * 24)
+											)} Days` /* pool.loan_term */
+										}
+										chargeFrequency={pool.charge_interval}
+										paymentFrequency={
+											(() => {
+												const days = Math.floor(
+													pool.payment_frequency /
+														(3600 * 24)
+												);
+
+												return days == 7
+													? "Weekly"
+													: `${days} Days`;
+											})() /* pool.payment_frequency */
+										}
+										signer={signer}
+									/>
+								);
+							})}
+						</>
+					) : //<p>No pools yet.</p>
+					null}
 				</>
 			) : (
 				<>
-					<BorrowerLoanEntry
+					{loans && loans.length > 0 ? (
+						<>
+							{loans.map((loan) => {
+								return (
+									<BorrowerLoanEntry
+										address={loan.pool.address}
+										collection={
+											loan.pool.original_collection.symbol
+										}
+										balance={loan.balance}
+										secured={loan.status}
+										interestRate={"0.7"}
+										loanTerm={`0 Days`}
+										compoundsIn={"00:36"}
+										signer={signer}
+									/>
+								);
+							})}
+						</>
+					) : null}
+					{/* <BorrowerLoanEntry
 						address={contractAddresses["pool"]}
 						collection={"BAYC"}
 						balance={60}
@@ -208,7 +182,7 @@ const Data = ({ poolView, lenderView, signer }) => {
 						loanTerm={"2 weeks"}
 						compoundsIn={"00:36"}
 						signer={signer}
-					/>
+					/> */}
 				</>
 			)}
 		</>
@@ -218,12 +192,41 @@ const Data = ({ poolView, lenderView, signer }) => {
 const PoolContainer = ({ instance, provider, signer }) => {
 	const [pools, setPools] = useState([]);
 	const [loans, setLoans] = useState([]);
+	const [signerAddress, setSignerAddress] = useState("");
 	const [poolView, setPoolView] = useState(1);
 	const [lenderView, setLenderView] = useState(1);
+	const [popularPoolQueryResult, reexecutePopularPoolQueryResult] = useQuery(
+		getPools(null, 10, "asc", "created_at")
+	);
+	const [loansQueryResult, reexecuteLoansQueryResult] = useQuery(
+		getLoans(`{ account_: { id: ${signerAddress} } }`)
+	);
 
 	useEffect(() => {
-		// set pools
-	}, []);
+		const main = async () => {
+			if (signer) {
+				console.log("SET SIGNER:", await signer.getAddress());
+				setSignerAddress(await signer.getAddress());
+			}
+		};
+
+		main();
+	}, [signer]);
+
+	useEffect(() => {
+		if (signerAddress && signerAddress !== "") {
+			console.log("SIGNER ADDRESS:", signerAddress);
+			reexecuteLoansQueryResult();
+		}
+	}, [signerAddress]);
+
+	useEffect(() => {
+		setPools(popularPoolQueryResult?.data?.poolEntities || []);
+	}, [popularPoolQueryResult]);
+
+	useEffect(() => {
+		setLoans(loansQueryResult?.data?.loanEntities);
+	}, [loansQueryResult]);
 
 	useEffect(() => {
 		if (lenderView === 1 && poolView === 1) {
@@ -239,6 +242,9 @@ const PoolContainer = ({ instance, provider, signer }) => {
 
 	return (
 		<div className="w-screen flex items-center justify-center">
+			<div className="absolute">
+				<Outlet />
+			</div>
 			<div className="w-2/3">
 				<div className="flex items-center space-x-4 w-max">
 					<p className="w-full text-white text-2xl font-bold">
@@ -288,7 +294,7 @@ const PoolContainer = ({ instance, provider, signer }) => {
 													Collection
 												</th>
 												<th className="bg-neutral-900 h-full pb-4">
-													Min Deposit.
+													Coverage Ratio
 												</th>
 												<th className="bg-neutral-900 h-full pb-4">
 													Interest Rate
@@ -297,7 +303,7 @@ const PoolContainer = ({ instance, provider, signer }) => {
 													Loan Term
 												</th>
 												<th className="bg-neutral-900 h-full pb-4">
-													Payments Due
+													Payment Frequency
 												</th>
 												<th className="bg-neutral-900 w-40 h-full pb-4"></th>
 											</tr>
@@ -320,7 +326,7 @@ const PoolContainer = ({ instance, provider, signer }) => {
 													Loan Term
 												</th>
 												<th className="bg-neutral-900 h-full pb-4">
-													Compounds In
+													Next Charge
 												</th>
 												<th className="bg-neutral-900 w-40 h-full pb-4"></th>
 											</tr>
@@ -329,9 +335,11 @@ const PoolContainer = ({ instance, provider, signer }) => {
 									<tbody>
 										<Data
 											{...{
+												pools,
 												poolView,
 												lenderView,
 												signer,
+												loans,
 											}}
 										/>
 									</tbody>

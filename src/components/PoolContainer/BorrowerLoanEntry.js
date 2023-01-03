@@ -21,7 +21,7 @@ const ActionButton = ({ bg, content, onClick }) => {
 
 const BorrowerLoanEntry = ({
 	address = "0x00000000000000000000",
-	collection = "BAYC",
+	collection = "LEVER",
 	balance = 60,
 	secured = true,
 	interestRate = 0.7,
